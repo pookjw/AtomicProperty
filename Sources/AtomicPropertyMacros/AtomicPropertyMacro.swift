@@ -208,12 +208,6 @@ public struct AtomicProperty: AccessorMacro, PeerMacro {
             return nil
         }
         
-        for binding in property.bindings {
-            if binding.accessorBlock != nil {
-                fatalError()
-            }
-        }
-        
         return property
     }
     
