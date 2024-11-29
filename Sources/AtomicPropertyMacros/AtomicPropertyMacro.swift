@@ -238,11 +238,21 @@ public struct AtomicProperty: AccessorMacro, PeerMacro {
     private static func typeText(of decl: VariableDeclSyntax) -> String? {
         var type: String?
         for binding in decl.bindings {
-            guard let text = binding.typeAnnotation?.type.as(IdentifierTypeSyntax.self)?.name.text else {
+            guard let typeSyntex = binding.typeAnnotation?.type else {
                 continue
             }
             
-            type = text
+            var optionalCount: Int = .zero
+            var typeSyntax: TypeSyntax = typeSyntex
+            while let optionalSyntax: OptionalTypeSyntax = typeSyntax.as(OptionalTypeSyntax.self) {
+                typeSyntax = optionalSyntax.wrappedType
+                optionalCount += 1
+            }
+            
+            type = "\(typeSyntax.as(IdentifierTypeSyntax.self)!.trimmed.name)"
+            for _ in 0..<optionalCount {
+                type! += "?"
+            }
             break
         }
         
